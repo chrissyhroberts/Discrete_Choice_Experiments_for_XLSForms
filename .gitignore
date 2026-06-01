@@ -1,34 +1,176 @@
-# Gradle files
-.gradle/
-build/
+# =========================================================
+# DCE Choice Lab / Android Studio / Gradle .gitignore
+# =========================================================
 
-# Local configuration file (sdk path, etc)
-local.properties
+# ---------------------------------------------------------
+# Android Studio
+# ---------------------------------------------------------
+.idea/
+*.iml
+*.ipr
+*.iws
 
-# Log/OS Files
-*.log
+# User-specific IDE settings
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/deploymentTargetDropDown.xml
+.idea/shelf/
 
-# Android Studio generated files and folders
+# Android Studio generated
 captures/
+.navigation/
 .externalNativeBuild/
 .cxx/
-*.aab
+
+# ---------------------------------------------------------
+# Gradle
+# ---------------------------------------------------------
+.gradle/
+build/
+**/build/
+
+# Gradle wrapper JAR SHOULD usually be committed
+# gradle/wrapper/gradle-wrapper.jar
+
+# Local Gradle config
+gradle-app.setting
+
+# ---------------------------------------------------------
+# Local machine configuration
+# ---------------------------------------------------------
+local.properties
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# ---------------------------------------------------------
+# Logs
+# ---------------------------------------------------------
+*.log
+
+# ---------------------------------------------------------
+# APK / AAB outputs
+# ---------------------------------------------------------
 *.apk
-output-metadata.json
+*.aab
+*.ap_
 
-# IntelliJ
-*.iml
-.idea/
-misc.xml
-deploymentTargetDropDown.xml
-render.experimental.xml
+# If you WANT releases in repo, comment these out
+# app/release/
+# app/debug/
 
-# Keystore files
+# ---------------------------------------------------------
+# Signing keys / secrets
+# ---------------------------------------------------------
 *.jks
 *.keystore
+*.pem
+*.p12
+*.key
 
-# Google Services (e.g. APIs or Firebase)
-google-services.json
+keystore.properties
+signing.properties
+secrets.properties
+apikeys.properties
 
-# Android Profiling
+# Environment files
+.env
+.env.*
+
+# ---------------------------------------------------------
+# Kotlin / Java
+# ---------------------------------------------------------
+*.class
+*.jar
+*.war
+*.ear
+
+# Kotlin metadata
+*.kotlin_module
+
+# ---------------------------------------------------------
+# NDK / CMake
+# ---------------------------------------------------------
+obj/
+out/
+
+# ---------------------------------------------------------
+# Android profiling
+# ---------------------------------------------------------
 *.hprof
+
+# ---------------------------------------------------------
+# Generated app assets
+# ---------------------------------------------------------
+generated/
+app/generated/
+
+# ---------------------------------------------------------
+# Temporary files
+# ---------------------------------------------------------
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+
+# ---------------------------------------------------------
+# Python helper scripts (if added later)
+# ---------------------------------------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.envrc
+
+# ---------------------------------------------------------
+# R / Quarto helper tooling (if added later)
+# ---------------------------------------------------------
+.Rhistory
+.RData
+.Rproj.user/
+.quarto/
+
+# ---------------------------------------------------------
+# Test outputs
+# ---------------------------------------------------------
+test-output/
+coverage/
+reports/
+
+# ---------------------------------------------------------
+# Firebase / Google Services
+# ---------------------------------------------------------
+google-services.json
+firebase-config.json
+
+# ---------------------------------------------------------
+# Jetpack Compose build caches
+# ---------------------------------------------------------
+.compose_cache/
+
+# ---------------------------------------------------------
+# Miscellaneous
+# ---------------------------------------------------------
+*.orig
+*.rej
+
+# ---------------------------------------------------------
+# Keep these committed
+# ---------------------------------------------------------
+!gradlew
+!gradlew.bat
+!gradle/wrapper/gradle-wrapper.properties
+!gradle/wrapper/gradle-wrapper.jar
