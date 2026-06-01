@@ -550,4 +550,38 @@ This reduces accidental selections and makes behaviour more consistent across DC
 
 # License
 
-TBD
+MIT
+
+# Change Log
+
+v0.3.5
+- AGP 8.13.2 verified build stack
+
+v0.3.4
+- Final two-step MaxDiff interaction
+
+v0.3.3
+- Left/right MaxDiff experiment
+  
+v0.3.2
+- Pairwise explicit Next
+- MaxDiff redesign
+  
+v0.3.1
+- Compact ranking controls
+
+v0.3.0
+- Renamed to DCE Choice Lab
+  
+v0.2.x
+- Initial DCE implementations
+- Ranking experiments
+- UI iteration
+
+
+
+
+
+
+
+
