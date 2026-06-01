@@ -1,56 +1,157 @@
-# ODK Choice Experiment App
+# DCE Choice Lab
 
-Minimal Android/Kotlin prototype for running choice experiments from ODK Collect via Android intents.
+DCE Choice Lab is an offline-first Android application for running advanced respondent interaction workflows from XLSForms and returning structured JSON data back into ODK Collect, KoboCollect, and related XLSForm ecosystems.
 
-Current status: **v0 pairwise comparison working skeleton**.
+The first module is focused on Discrete Choice Experiments (DCEs), including pairwise comparison, MaxDiff, ranking, points allocation, and conjoint-style choice tasks. The wider aim is to provide a modular capability layer for field research tasks that are difficult to implement elegantly inside standard form interfaces.
 
-Reserved intent actions:
+---
+
+## Current status
+
+This is active experimental research software.
+
+The current Android app supports:
+
+- Pairwise comparison
+- MaxDiff / Best-Worst Scaling
+- Ranking
+- Points allocation
+- Conjoint selection
+- Launcher demos
+- Light/dark monochrome display settings
+- Configurable ranking controls
+- JSON return payloads
+
+Interfaces, JSON formats, and intent contracts may change rapidly.
+
+---
+
+## Why this exists
+
+ODK and Kobo are excellent at structured forms, but less well suited to interaction-heavy tasks such as:
+
+- trade-off exercises
+- visual ranking
+- DCE/conjoint tasks
+- image maps
+- timelines
+- signing/attestation workflows
+- relationship/network mapping
+- structured respondent-facing interaction
+
+DCE Choice Lab follows this pattern:
+
+```text
+XLSForm
+→ launches Android capability by intent
+→ respondent completes interactive task
+→ app returns structured JSON
+→ form stores JSON in a text field
+```
+
+This preserves ordinary XLSForm workflows while allowing richer interaction models.
+
+---
+
+## Build requirements
+
+Current intended build stack:
+
+```text
+Android Gradle Plugin: 8.13.2
+Gradle wrapper: 8.13
+Kotlin Android plugin: 2.0.21
+Java: 17
+compileSdk: 34
+targetSdk: 34
+```
+
+Build in Android Studio using:
+
+```text
+Sync Project with Gradle Files
+Build → Build Bundle(s) / APK(s) → Build APK(s)
+```
+
+Or from the command line:
+
+```bash
+./gradlew assembleDebug
+```
+
+The debug APK will be generated under:
+
+```text
+app/build/outputs/apk/debug/
+```
+
+---
+
+# XLSForm integration
+
+DCE Choice Lab is launched from XLSForms using the external app appearance syntax.
+
+A typical XLSForm row looks like this:
+
+```text
+type | name       | label                  | appearance
+text | dce_result | Complete choice task   | ex:org.lshtm.choice.PAIRWISE(...)
+```
+
+The Android app returns a JSON string into the text field.
+
+---
+
+## Important note on quoting
+
+External app intent syntax can be fiddly when passing long strings. For anything beyond very small examples, prefer using calculated fields or JSON config files rather than writing long argument strings directly inside the appearance column.
+
+---
+
+# Intent actions
+
+Current intent actions:
 
 ```text
 org.lshtm.choice.PAIRWISE
 org.lshtm.choice.MAXDIFF
+org.lshtm.choice.RANKING
 org.lshtm.choice.POINTS
 org.lshtm.choice.CONJOINT
 ```
 
-Only `PAIRWISE` is implemented in this first version. The others are declared in the manifest so the contract is visible, but they currently show a placeholder screen.
+---
 
-## Pairwise intent contract
+# Minimal XLSForm examples
 
-Action:
+The examples below are written as simplified XLSForm tables. In a real XLSForm, these would appear in the `survey` sheet.
+
+---
+
+## 1. Pairwise comparison
+
+Use when respondents choose between options across repeated rounds.
 
 ```text
-org.lshtm.choice.PAIRWISE
+type      | name             | label                       | calculation
+calculate | pairwise_options |                             | 'Cost|Privacy|Speed|Offline use|Ease of training'
+calculate | pairwise_rounds  |                             | 5
+calculate | pairwise_per     |                             | 2
+text      | pairwise_result  | Complete pairwise choices   | 
 ```
 
-Input extras:
+Set the `appearance` for `pairwise_result` to:
 
-| Extra | Type | Example | Notes |
-|---|---:|---|---|
-| `options` | string | `Cost|Privacy|Speed|Offline use` | Pipe-delimited list. `items` is also accepted as an alias. |
-| `rounds` | int | `5` | Number of rounds. |
-| `options_per_round` | int | `2` | Usually 2 for pairwise, but currently allows 2 to 5. |
-| `seed` | string | `${instanceID}` | Used for reproducible pseudo-random task generation. |
-| `session_id` | string | `${instanceID}` | Optional. Falls back to seed. |
+```text
+ex:org.lshtm.choice.PAIRWISE(options=${pairwise_options},rounds=${pairwise_rounds},options_per_round=${pairwise_per},seed=${instanceID})
+```
 
-Returned extras:
-
-| Extra | Type | Notes |
-|---|---:|---|
-| `value` | string | JSON result. This is the key ODK-style callers usually expect. |
-| `choice_result` | string | Same JSON result, useful for custom callers/debugging. |
-
-Example returned JSON:
+Returned JSON includes:
 
 ```json
 {
   "method": "pairwise",
-  "session_id": "uuid:abc123",
-  "seed": "uuid:abc123",
-  "options_per_round": 2,
-  "rounds_requested": 5,
-  "options": ["Cost", "Privacy", "Speed", "Offline use"],
-  "responses": [
+  "rounds": [
     {
       "round": 1,
       "shown": ["Privacy", "Cost"],
@@ -60,33 +161,374 @@ Example returned JSON:
 }
 ```
 
-## Building
+---
 
-Open the folder in Android Studio and let Gradle sync. Then build/run the `app` module.
+## 2. MaxDiff / Best-Worst Scaling
 
-The project deliberately avoids Jetpack Compose for v0 to keep dependencies light and make the intent/return loop easy to inspect. A later version can replace the programmatic UI with Compose screens.
+Use when respondents select the best and worst item from each set.
 
-## Testing with adb
-
-After installing the app on a device/emulator:
-
-```bash
-adb shell am start \
-  -a org.lshtm.choice.PAIRWISE \
-  --es options 'Cost|Privacy|Speed|Offline use|Training burden' \
-  --ei rounds 5 \
-  --ei options_per_round 2 \
-  --es seed 'test-seed-001' \
-  --es session_id 'test-session-001'
+```text
+type      | name          | label                    | calculation
+calculate | maxdiff_items |                          | 'Cost|Privacy|Speed|Offline use|Ease of training|Local control'
+calculate | maxdiff_rounds |                         | 6
+calculate | maxdiff_per   |                          | 4
+text      | maxdiff_result | Complete MaxDiff task    |
 ```
 
-## Extension plan
+Appearance:
 
-Recommended next implementation order:
+```text
+ex:org.lshtm.choice.MAXDIFF(items=${maxdiff_items},rounds=${maxdiff_rounds},items_per_round=${maxdiff_per},seed=${instanceID})
+```
 
-1. Pairwise comparison: already started.
-2. MaxDiff: same round generator, but UI collects `best` and `worst`.
-3. Points allocation: sliders or +/- steppers, with total validation.
-4. Conjoint: attribute/profile generator and multi-card selection screen.
+Returned JSON includes:
 
-The important principle is that the app should return both the generated design and the participant response, so the exact choice set is auditable later.
+```json
+{
+  "method": "maxdiff",
+  "rounds": [
+    {
+      "round": 1,
+      "shown": ["Cost", "Privacy", "Offline use", "Ease of training"],
+      "best": "Offline use",
+      "worst": "Cost"
+    }
+  ]
+}
+```
+
+---
+
+## 3. Ranking
+
+Use when respondents rank a set of options.
+
+```text
+type      | name          | label                    | calculation
+calculate | ranking_items |                          | 'Cost|Privacy|Speed|Offline use'
+calculate | ranking_rounds |                         | 1
+calculate | ranking_per   |                          | 4
+text      | ranking_result | Rank the options         |
+```
+
+Appearance:
+
+```text
+ex:org.lshtm.choice.RANKING(options=${ranking_items},rounds=${ranking_rounds},options_per_round=${ranking_per},seed=${instanceID})
+```
+
+Returned JSON includes:
+
+```json
+{
+  "method": "ranking",
+  "rounds": [
+    {
+      "round": 1,
+      "shown": ["Cost", "Privacy", "Speed", "Offline use"],
+      "ranking": ["Offline use", "Privacy", "Speed", "Cost"]
+    }
+  ]
+}
+```
+
+---
+
+## 4. Points allocation
+
+Use when respondents allocate a fixed number of points across options.
+
+```text
+type      | name           | label                         | calculation
+calculate | points_options |                               | 'Cost|Privacy|Speed|Offline use'
+calculate | total_points   |                               | 10
+text      | points_result  | Allocate points               |
+```
+
+Appearance:
+
+```text
+ex:org.lshtm.choice.POINTS(options=${points_options},points=${total_points},seed=${instanceID})
+```
+
+Returned JSON includes:
+
+```json
+{
+  "method": "points",
+  "rounds": [
+    {
+      "round": 1,
+      "shown": ["Cost", "Privacy", "Speed", "Offline use"],
+      "total_points": 10,
+      "allocations": {
+        "Cost": 2,
+        "Privacy": 3,
+        "Speed": 1,
+        "Offline use": 4
+      }
+    }
+  ]
+}
+```
+
+---
+
+## 5. Conjoint selection
+
+Use when respondents choose between profiles made from attributes and levels.
+
+For early/simple XLSForm integration, a compact pipe-delimited attribute string can be used.
+
+```text
+type      | name              | label                         | calculation
+calculate | conjoint_profiles |                              | 'BRAND:iPhone,Samsung,Pixel|MEMORY:128GB,256GB,512GB|PRICE:500,830,1290'
+calculate | conjoint_rounds   |                               | 5
+calculate | profiles_per_round |                              | 2
+text      | conjoint_result   | Complete conjoint task        |
+```
+
+Appearance:
+
+```text
+ex:org.lshtm.choice.CONJOINT(attributes=${conjoint_profiles},rounds=${conjoint_rounds},profiles_per_round=${profiles_per_round},seed=${instanceID})
+```
+
+Returned JSON includes:
+
+```json
+{
+  "method": "conjoint",
+  "rounds": [
+    {
+      "round": 1,
+      "profiles": [
+        {
+          "profile_id": "1A",
+          "BRAND": "Pixel",
+          "MEMORY": "256GB",
+          "PRICE": "830"
+        },
+        {
+          "profile_id": "1B",
+          "BRAND": "Samsung",
+          "MEMORY": "512GB",
+          "PRICE": "1290"
+        }
+      ],
+      "selected": "1A"
+    }
+  ]
+}
+```
+
+---
+
+# Recommended pattern: JSON config as media attachment
+
+For serious studies, do not encode the whole experiment inside the XLSForm.
+
+Instead, include a JSON config file as form media, similar to an image or audio file.
+
+Example media folder:
+
+```text
+media/
+  vaccine_maxdiff.json
+  phone_conjoint.json
+  household_ranking.json
+```
+
+The XLSForm passes only:
+
+```text
+method
+config_file
+seed
+session_id
+```
+
+Example:
+
+```text
+type      | name             | label                     | calculation
+calculate | dce_config_file  |                           | 'vaccine_maxdiff.json'
+text      | dce_result       | Complete choice task      |
+```
+
+Appearance:
+
+```text
+ex:org.lshtm.choice.MAXDIFF(config_file=${dce_config_file},seed=${instanceID})
+```
+
+Example JSON config:
+
+```json
+{
+  "module": "choice",
+  "method": "maxdiff",
+  "version": "1.0",
+  "rounds": 6,
+  "items_per_round": 4,
+  "items": [
+    "Cost",
+    "Privacy",
+    "Speed",
+    "Offline use",
+    "Ease of training",
+    "Local control"
+  ]
+}
+```
+
+---
+
+## Pregenerated designs
+
+For formal DCEs, pregenerated designs are preferable because the exact task sequence is controlled and auditable.
+
+Example:
+
+```json
+{
+  "module": "choice",
+  "method": "maxdiff",
+  "design_mode": "pregenerated",
+  "version": "1.0",
+  "rounds": [
+    {
+      "round": 1,
+      "shown": ["Cost", "Privacy", "Offline use", "Ease of training"]
+    },
+    {
+      "round": 2,
+      "shown": ["Speed", "Cost", "Local control", "Privacy"]
+    }
+  ]
+}
+```
+
+The app should return the generated or loaded design along with responses so that the analysis can verify exactly what was shown.
+
+---
+
+# Seeded randomisation
+
+For reproducible respondent-specific randomisation, pass a seed.
+
+Recommended seed:
+
+```text
+${instanceID}
+```
+
+Example:
+
+```text
+ex:org.lshtm.choice.PAIRWISE(options=${pairwise_options},rounds=5,options_per_round=2,seed=${instanceID})
+```
+
+This allows the same participant/session to reproduce the same generated design, assuming the app version and generation algorithm are unchanged.
+
+---
+
+# Suggested XLSForm fields
+
+A practical form might include:
+
+```text
+type      | name              | label
+start     | start             |
+end       | end               |
+deviceid  | deviceid          |
+calculate | session_id        |
+calculate | dce_config_file   |
+text      | dce_result        | Complete choice task
+calculate | dce_method        |
+calculate | dce_complete      |
+```
+
+The `dce_result` field stores the JSON returned by the app.
+
+Downstream R scripts can parse and validate the JSON.
+
+---
+
+# Backend parsing
+
+Returned JSON should be parsed after export using R, Python, or another backend tool.
+
+Suggested outputs:
+
+```text
+submission_id
+module
+method
+round
+shown
+selected
+best
+worst
+ranking
+allocations
+seed
+app_version
+```
+
+For attestation modules in future:
+
+```text
+submission_id
+form_hash
+signed_hash
+operator_id
+operator_auth
+witness_token_uid
+timestamp_device
+signature_valid
+witness_valid
+```
+
+---
+
+# Future modules
+
+The wider capability-lab model could support:
+
+- image maps
+- body maps
+- lesion mapping
+- timelines
+- exposure calendars
+- household rosters
+- network mapping
+- sample chain-of-custody
+- field randomisation
+- operator/witness attestation
+- NFC/QR capability extensions
+
+---
+
+# Repository structure
+
+```text
+app/                Android application
+examples/           Example notes and config files
+odk_form/           Example XLSForms
+gradle/             Gradle wrapper
+```
+
+---
+
+# Development notes
+
+The current interaction design intentionally avoids auto-forwarding after selection. Users select an answer, see visual feedback, and then explicitly press Next.
+
+This reduces accidental selections and makes behaviour more consistent across DCE methods.
+
+---
+
+# License
+
+TBD
