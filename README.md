@@ -4,6 +4,10 @@ DCE Choice Lab is an offline-first Android application for running advanced resp
 
 The first module is focused on Discrete Choice Experiments (DCEs), including pairwise comparison, MaxDiff, ranking, points allocation, and conjoint-style choice tasks. The wider aim is to provide a modular capability layer for field research tasks that are difficult to implement elegantly inside standard form interfaces.
 
+<img width="300" height="700" alt="Main Screen - Landing Page" src="https://github.com/user-attachments/assets/e852e280-d226-4574-8372-e0788c076a16" />
+<img width="300" height="700" alt="Settings" src="https://github.com/user-attachments/assets/9d9200ca-0be5-4745-9199-873c05017e84" />
+
+
 ---
 
 ## Current status
@@ -132,6 +136,9 @@ The examples below are written as simplified XLSForm tables. In a real XLSForm, 
 
 Use when respondents choose between options across repeated rounds.
 
+<img width="300" height="700" alt="Pairwise Comparison" src="https://github.com/user-attachments/assets/03cdbd85-1f2c-4478-8afb-a1b7f78b303d" />
+
+
 ```text
 type      | name             | label                       | calculation
 calculate | pairwise_options |                             | 'Cost|Privacy|Speed|Offline use|Ease of training'
@@ -166,6 +173,9 @@ Returned JSON includes:
 ## 2. MaxDiff / Best-Worst Scaling
 
 Use when respondents select the best and worst item from each set.
+
+<img width="300" height="700" alt="Max Diff" src="https://github.com/user-attachments/assets/d2bcb519-bd43-4097-bf61-33156628a250" />
+
 
 ```text
 type      | name          | label                    | calculation
@@ -203,6 +213,9 @@ Returned JSON includes:
 
 Use when respondents rank a set of options.
 
+<img width="300" height="700" alt="Ranking" src="https://github.com/user-attachments/assets/908e9ae2-41fa-4c9e-b553-1a51f19f5bca" />
+
+
 ```text
 type      | name          | label                    | calculation
 calculate | ranking_items |                          | 'Cost|Privacy|Speed|Offline use'
@@ -237,6 +250,9 @@ Returned JSON includes:
 ## 4. Points allocation
 
 Use when respondents allocate a fixed number of points across options.
+
+<img width="300" height="700" alt="Points Allocation" src="https://github.com/user-attachments/assets/b9debb48-d11a-4815-a88d-6fd88172f708" />
+
 
 ```text
 type      | name           | label                         | calculation
@@ -277,6 +293,9 @@ Returned JSON includes:
 ## 5. Conjoint selection
 
 Use when respondents choose between profiles made from attributes and levels.
+
+<img width="300" height="700" alt="Conjoint Selections" src="https://github.com/user-attachments/assets/07d2db2f-e6c2-4f56-bff8-2a5167e4f1a8" />
+
 
 For early/simple XLSForm integration, a compact pipe-delimited attribute string can be used.
 
