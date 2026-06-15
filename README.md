@@ -526,6 +526,7 @@ The wider capability-lab model could support:
 - field randomisation
 - operator/witness attestation
 - NFC/QR capability extensions
+- validated pain metrics (with device specific size calibration)
 
 ---
 
