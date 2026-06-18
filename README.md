@@ -527,6 +527,10 @@ The wider capability-lab model could support:
 - operator/witness attestation
 - NFC/QR capability extensions
 - validated pain metrics (with device specific size calibration)
+- loudness metering
+- light metering
+- speed measurements / accelerometer
+
 
 ---
 
