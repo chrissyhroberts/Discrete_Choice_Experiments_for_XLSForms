@@ -515,23 +515,102 @@ witness_valid
 
 The wider capability-lab model could support:
 
-- image maps
-- body maps
-- lesion mapping
-- timelines
-- exposure calendars
-- household rosters
-- network mapping
-- sample chain-of-custody
-- field randomisation
-- operator/witness attestation
-- NFC/QR capability extensions
-- validated pain metrics (with device specific size calibration)
-- loudness metering
-- light metering
-- speed measurements / accelerometer
-- locating geopoints with compass and gps
+# Future modules
 
+
+* image maps
+* body maps
+* lesion mapping
+* symptom localisation
+* wound measurement
+* validated pain metrics (with device-specific size calibration)
+* better image annotation and markup
+* clickable grid overlays on images - return both modified and unmodified images side by side - clinical signs etc
+* numbered cell selection
+* polygon and freehand markup with predefined markers
+* timelines
+* event sequencing tools
+* household rosters
+* contact network mapping
+* community structure mapping
+* sample chain-of-custody
+* specimen tracking
+* field randomisation
+* allocation concealment and audit trails
+* operator attestation
+* witness attestation
+* protocol deviation capture
+* offline consent workflows
+* protocol completeness tracking
+* visit schedule tracking across multiple timepoints
+* required-form completion dashboards
+* missing-form detection
+* visit-window reminders
+* automatic launch of the correct ODK form after reminders
+* participant-level protocol progress summaries
+* offline follow-up queues
+* overdue visit alerts
+* deviation flags for missed or late forms
+* NFC capability extensions
+* QR capability extensions
+* biometric verification
+* staff accreditation checks
+* cryptographic identity tokens
+* loudness metering
+* light metering
+* temperature and humidity capture - BLE link to ESP-NOW sensors etc
+* air quality monitoring
+* Bluetooth beacon sensing
+* proximity logging
+* device orientation and compass data
+* speed and accelerometer measurements
+* locating geopoints with compass and GPS
+* augmented reality waypoint navigation
+* route following and transect guidance
+* area measurement
+* polygon mapping
+* distance travelled estimation
+* height of tall objects
+* distance estimation
+* slope and inclination measurement
+* canopy cover estimation
+* horizon obstruction measurements
+* building and structure measurements
+* barcode and QR recognition
+* object counting
+* text extraction (OCR)
+* handwriting-assisted transcription
+* colourimetric test interpretation
+* lateral flow test interpretation
+* vegetation and land-cover assessment
+* inventory and asset counting
+* voice note capture with speech transcription
+* hearing assessment
+* respiratory rate estimation
+* visual acuity testing
+* colour vision testing
+* reaction time testing
+* gait and balance assessment
+* cognitive screening tools
+* anthropometry support
+* wound and lesion assessment
+* eligibility checking
+* protocol compliance checks
+* NFC tag programming and verification
+* geofencing and location-triggered actions
+* electronic signatures
+* QR code generation
+* offline cryptographic signing
+* secure token generation and verification
+* environmental sensor integration
+* custom hardware integration via Bluetooth, USB or Wi-Fi
+* real-time dashboard widgets and study status displays
+* participant appointment scheduling and tracking
+* medication dispensing support
+* adverse event follow-up management
+* offline case management workflows
+* smart form launchers based on participant status or workflow stage
+* study-specific mini-apps packaged as reusable capability modules.
 
 ---
 
