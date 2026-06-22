@@ -530,6 +530,7 @@ The wider capability-lab model could support:
 - loudness metering
 - light metering
 - speed measurements / accelerometer
+- locating geopoints with compass and gps
 
 
 ---
